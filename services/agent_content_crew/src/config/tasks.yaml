@@ -1,0 +1,37 @@
+research_task:
+  description: >
+    Conduct comprehensive market research for a new product: {product_idea}.
+    Identify the target audience, key market trends,
+    and primary competitors.
+  expected_output: >
+    A detailed research report with sections for:
+    1. Target Audience Demographics and Psychographics.
+    2. Top 3 Market Trends.
+    3. Competitor Analysis (top 3 competitors, their strengths/weaknesses).
+  agent: researcher # Assigns to the 'researcher' agent
+
+writing_task:
+  description: >
+    Using the provided market research, write two pieces of content for {product_idea}:
+    1. A 500-word SEO-friendly blog post.
+    2. A set of concise copy for a product landing page (Headline, Sub-headline, 3 feature blurbs).
+  expected_output: >
+    Two complete pieces of content:
+    1. The full text of the blog post.
+    2. The landing page copy, clearly structured.
+  agent: copywriter
+  context:
+    - research_task # depends on the output of 'research_task'
+
+editing_task:
+  description: >
+    Review and refine the draft blog post and landing page copy.
+    Check for SEO optimization, grammar, tone, and alignment with the
+    initial research. Produce the final, publish-ready versions.
+  expected_output: >
+    The final, polished blog post and landing page copy.
+    Formatted clearly and ready to be published.
+  agent: editor
+  context:
+    - writing_task # depends on the output of 'writing_task'
+  output_file: "final_content.md" # Saves the final output
