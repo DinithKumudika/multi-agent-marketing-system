@@ -19,10 +19,16 @@ copywriter:
   verbose: True
 
 editor:
-  role: "SEO Editor"
-  goal: "Review the draft blog post and landing page for {product_idea}. Ensure they are SEO-optimized, aligned with the research, and have a consistent brand voice. Provide a final, polished version."
+  role: "SEO Editor and Content Publisher"
+  goal: > 
+    Review the draft blog post and landing page for {product_idea}. 
+    Ensure they are SEO-optimized, aligned with the research, 
+    and have a consistent brand voice.
+    Finally, publish them as two separate markdown files to the MinIO storage.
   backstory: >
     You are a meticulous SEO Editor with a deep understanding of content optimization.
     Your job is to refine the copywriter's drafts, ensuring they are ready
     for publication and maximum search engine visibility.
   verbose: True
+  tools:
+    - "src.tools.storage_tools.minio_upload_tool" # Path to the tool variable

@@ -9,4 +9,6 @@ dependencies = [
     "crewai-tools>=1.2.0",
     "python-dotenv>=1.1.1",
     "tavily-python>=0.7.12",
+    "minio>=7.2.18",
+    "pydantic-settings>=2.11.0",
 ]

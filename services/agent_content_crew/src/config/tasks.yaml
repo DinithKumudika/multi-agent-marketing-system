@@ -15,23 +15,33 @@ writing_task:
     Using the provided market research, write two pieces of content for {product_idea}:
     1. A 500-word SEO-friendly blog post.
     2. A set of concise copy for a product landing page (Headline, Sub-headline, 3 feature blurbs).
+
+    IMPORTANT: Format your output with clear separators, like this:
+
+    ### BLOG POST ###
+    (Blog post content here)
+
+    ### LANDING PAGE ###
+    (Landing page content here)
+
   expected_output: >
-    Two complete pieces of content:
-    1. The full text of the blog post.
-    2. The landing page copy, clearly structured.
+    The full text of the blog post and landing page, separated by
+    '### BLOG POST ###' and '### LANDING PAGE ###' markers.
   agent: copywriter
   context:
     - research_task # depends on the output of 'research_task'
 
 editing_task:
   description: >
-    Review and refine the draft blog post and landing page copy.
-    Check for SEO optimization, grammar, tone, and alignment with the
-    initial research. Produce the final, publish-ready versions.
+    1. Review and refine the draft blog post and landing page copy.
+    2. Check for SEO optimization, grammar, tone, and alignment with the initial research.
+    3. Once polished, use the MinIO uploader tool to save them as separate files.
+       - Upload the blog post as 'blog_post.md' to the '{bucket_name}'' bucket.
+       - Upload the landing page copy as 'landing_page.md' to the '{bucket_name}' bucket.
   expected_output: >
-    The final, polished blog post and landing page copy.
-    Formatted clearly and ready to be published.
+    Confirmation messages for two successful uploads:
+    - 'Successfully uploaded 'blog_post.md' to bucket '{bucket_name}'.'
+    - 'Successfully uploaded 'landing_page.md' to bucket '{bucket_name}'.'
   agent: editor
   context:
     - writing_task # depends on the output of 'writing_task'
-  output_file: "final_content.md" # Saves the final output

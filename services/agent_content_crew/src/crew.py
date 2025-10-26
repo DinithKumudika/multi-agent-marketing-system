@@ -20,5 +20,5 @@ class ContentCrew:
             agents=self.agents,  # self.agents and self.tasks are loaded from the YAMLs
             tasks=self.tasks,
             process=Process.sequential,
-            verbose=2,
+            verbose=2
         )

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio-server
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"  # API port
+      - "9001:9001"  # Console (web UI) port
+    volumes:
+      - minio_data:/data
+    environment:
+      # These will be pulled from your .env file
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+
+volumes:
+  minio_data:
