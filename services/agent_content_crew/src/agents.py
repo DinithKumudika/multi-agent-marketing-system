@@ -1,5 +1,5 @@
 from crewai import Agent
-from .tools import tavily_tool
+from .tools.search_tools import tavily_tool
 
 # Agent 1: Market Researcher
 researcher = Agent(

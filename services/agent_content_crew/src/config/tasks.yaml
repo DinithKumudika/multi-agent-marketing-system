@@ -1,43 +1,60 @@
 research_task:
   description: >
-    Conduct comprehensive market research for a new product: {product_idea}.
-    Identify the target audience, key market trends,
-    and primary competitors.
+    Conduct supplemental research based on the marketing brief for {product_name}.
+    
+    1.  **Audience:** Search for {psychographics} and {demographics} of the {primary_audience}. If psychographics are not provided, find common ones for this audience.
+    2.  **Pain Points:** If {target_pain_points} are missing, find 3-5 most common problems for the {problem_statement}.
+    3.  **Market Trends:** Analyze 2-3 key market trends for the {category}.
+    3.  **Competitors:** Analyze the {known_competitors}. Find 2-3 more competitors in the {category}.
+    4.  **SEO:** Identify the top 10 SEO keywords for '{product_name}' and '{category}'.
+    
+    You MUST format your output as a JSON object that strictly adheres
+    to the 'ResearchReport' pydantic schema.
   expected_output: >
-    A detailed research report with sections for:
-    1. Target Audience Demographics and Psychographics.
-    2. Top 3 Market Trends.
-    3. Competitor Analysis (top 3 competitors, their strengths/weaknesses).
+    A single, valid JSON object that matches the 'ResearchReport' pydantic schema.
+    Do not add any other text or pre-amble around the JSON object.
   agent: researcher # Assigns to the 'researcher' agent
+  output_pydantic: "src.models.research_models.ResearchReport"
 
 writing_task:
   description: >
-    Using the provided market research, write two pieces of content for {product_idea}:
+    Use the research report from the previous step AND the original marketing brief 
+    to write the content for {product_name}.
     1. A 500-word SEO-friendly blog post.
-    2. A set of concise copy for a product landing page (Headline, Sub-headline, 3 feature blurbs).
-
-    IMPORTANT: Format your output with clear separators, like this:
-
-    ### BLOG POST ###
-    (Blog post content here)
-
-    ### LANDING PAGE ###
-    (Landing page content here)
-
+    2. A set of concise copy for a product landing page.
+    
+    - **Brief Compliance:** Adhere strictly to the '{tone_and_personality}', '{usp}', 
+      '{key_features}', '{main_benefits}', and '{main_goal}'.
+    - **Blog Post:** Write a 500-word SEO-friendly blog post.
+    - **Landing Page:** Write concise copy for the landing page.
+    - **Output:** You MUST format your output as a JSON object that strictly adheres
+        to the 'MarketingContent' pydantic schema.
   expected_output: >
-    The full text of the blog post and landing page, separated by
-    '### BLOG POST ###' and '### LANDING PAGE ###' markers.
+    A single, valid JSON object that matches the 'MarketingContent' pydantic schema.
+    Do not add any other text or pre-amble around the JSON object.
   agent: copywriter
   context:
     - research_task # depends on the output of 'research_task'
+  output_pydantic: "src.models.content_models.MarketingContent"
 
 editing_task:
   description: >
-    1. Review and refine the draft blog post and landing page copy.
-    2. Check for SEO optimization, grammar, tone, and alignment with the initial research.
-    3. Once polished, use the MinIO uploader tool to save them as separate files.
-       - Upload the blog post as 'blog_post.md' to the '{bucket_name}'' bucket.
-       - Upload the landing page copy as 'landing_page.md' to the '{bucket_name}' bucket.
+    You will receive a 'MarketingContent' JSON object. Your job is to act as a
+    guardrail and final editor.
+    
+    1.  Receive the 'MarketingContent' JSON object from the copywriter.
+    2.  **Guardrail Checks:** 
+        - Ensure the content's tone matches the brief's '{tone_and_personality}'.
+        - Ensure content is professional and free of errors.
+        - Check for and remove any profanity, biased, or inappropriate language.
+        - Ensure all landing page blurbs are concise.
+        - Ensure the '{usp}' is clearly communicated.
+    3. **Editing:**
+           - Perform a final polish for SEO optimization, grammar, and alignment with the research.
+    4.  **Format & Publish:** Convert the landing page JSON object into a single, clean markdown string.
+    5.  **Upload:** Use the MinIO uploader tool:
+        - Upload the blog post as 'blog_post.md' to the '{bucket_name}' bucket.
+        - Upload the formatted landing page copy as 'landing_page.md' to the '{bucket_name}' bucket.
   expected_output: >
     Confirmation messages for two successful uploads:
     - 'Successfully uploaded 'blog_post.md' to bucket '{bucket_name}'.'

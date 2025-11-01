@@ -1,11 +1,16 @@
 import os
 from crewai import Crew, Process
-from crewai.project import CrewBase, agent, task, crew
-from dotenv import load_dotenv
+from crewai.project import CrewBase, crew
 
-load_dotenv()
+from .config.settings import settings
 
-os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
+os.environ["TAVILY_API_KEY"] = settings.TAVILY_API_KEY.get_secret_value()
+
+if settings.GEMINI_API_KEY:
+    os.environ["GEMINI_API_KEY"] = settings.GEMINI_API_KEY.get_secret_value()
+
+if settings.OPENAI_API_KEY:
+    os.environ["OPENAI_API_KEY"] = settings.OPENAI_API_KEY.get_secret_value()
 
 @CrewBase
 class ContentCrew:
