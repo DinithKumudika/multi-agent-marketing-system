@@ -15,6 +15,10 @@ The system will:
 
 4. Securely publish the new ad campaign to Google Ads.
 
+1️⃣ Idea Intake → 2️⃣ Market Validation → 3️⃣ Branding → 4️⃣ Content Creation
+→ 5️⃣ Website + SEO → 6️⃣ Ads Launch → 7️⃣ Analytics & Feedback → 8️⃣ Continuous Optimization
+
+
 
 ### Agents Overview
 
@@ -41,7 +45,9 @@ Here is the breakdown of each agent, the framework it's built on, and its specif
 
   - `SEO_Editor` Agent: Reviews the draft for tone, clarity, and SEO alignment, sending it back to the Copywriter for revisions.
   
-- **Tool Integrations**: Google Search Tool: (Used by the MarketResearcher).
+- **Tool Integrations**: 
+  - **Google Search**: Used by the `MarketResearcher` perform the research
+  - **MINIO Upload**: Used bt the `SEO_Editor` to upload the blog post content and landing page content to storage bucket
 - **A2A & Authentication**: This agent acts as an A2A "server." The `CampaignOrchestrator` sends it a single task (e.g., "Create content for product X"). The ContentCrew handles its internal collaboration and, once its process is complete, returns the final text artifacts.
 
 #### 3. Agent: **`LandingPageDeveloper`**
@@ -93,3 +99,23 @@ Here is the breakdown of each agent, the framework it's built on, and its specif
 
 9. `Orchestrator` **(LangGraph)**: Receives the ID. Moves state to `DONE` and reports the success and campaign ID to the user.
 
+### Feature Implementation
+
+#### **``ContentCreationCrew``**
+
+- [x] Define Agents and Their Tasks in Yaml Configuration
+- [x] Integrate tavily API as a search tool for web search
+- [x] Create Content Crew
+- [x] Setup application logger and centralized settings
+- [x] Setup MINIO bucket storage client and docker deployment
+- [x] Develop a storage tool for agent to upload files to MINIO
+- [x] Soft guardrails in agent prompts, to enforce quality, tone, and content rules
+- [x] Setup hard guardrails using pydantic models to control structure of generated content
+- [x] Improve product idea submission with problem solved, target audience, USP, etc.
+- [x] Idea Submission via formatted CLI
+- [ ] React frontend for idea submission and content approval
+- [ ] Human-in-the-loop content review and approval process
+- [ ] Rest API server for idea submission (fastAPI)
+- [ ] Unit and integration tests for agents and tools
+
+#### **``Common``**

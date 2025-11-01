@@ -5,10 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "crewai[project]>=1.2.0",
+    "crewai[google-genai,project]>=1.2.0",
     "crewai-tools>=1.2.0",
     "python-dotenv>=1.1.1",
     "tavily-python>=0.7.12",
     "minio>=7.2.18",
     "pydantic-settings>=2.11.0",
+    "pydantic>=2.0.0",
+    "questionary>=2.1.1",
 ]
