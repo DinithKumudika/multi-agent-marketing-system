@@ -5,7 +5,7 @@ from .crew import ContentCrew
 from .config.settings import settings
 from .config.logger import logger
 
-def run(product_idea: str):
+def run():
     """
     Run the content creation crew by first collecting a comprehensive
     marketing brief
