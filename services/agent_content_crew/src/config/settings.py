@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     TAVILY_API_KEY: SecretStr
     
     # Per agent LLM Configuration
+    VALIDATOR_MODEL_PROVIDER: str = "google"
+    VALIDATOR_MODEL_id: str = "gemini-2.0-flash"
+
     RESEARCHER_MODEL_PROVIDER: str = "google"
     RESEARCHER_MODEL_ID: str = "gemini-2.0-flash"
     

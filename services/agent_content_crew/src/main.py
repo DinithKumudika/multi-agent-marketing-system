@@ -1,35 +1,66 @@
 from .cli.brief_collector import collect_brief
 from .models.content_models import MarketingBrief
-from .crew import ContentCrew
+from .models.validation_models import ValidationReport
+from .crew import ContentCrew, ValidationCrew
 
 from .config.settings import settings
 from .config.logger import logger
 
+VALIDATION_THRESHOLD = 50
+
 def run():
     """
-    Run the content creation crew by first collecting a comprehensive
-    marketing brief
+    Run the full validation and content creation pipeline
     """
 
     try:
         brief_data = collect_brief()
-
-        # 3. Validate the data with Pydantic
         brief = MarketingBrief(**brief_data)
     except Exception as e:
         logger.error(f"Error during brief collection or validation: {e}")
         return
+
+    # inputs for validation crew
+    validation_inputs = {
+        **brief.dict(),
+        'validator_model_provider': settings.VALIDATOR_LLM_PROVIDER,
+        'validator_model_name': settings.VALIDATOR_LLM_MODEL,
+    }
+
+    logger.info(f"--- Starting Validation Crew for: {brief.product_name} ---")
+    validation_crew = ValidationCrew().create_crew()
+    validation_result = validation_crew.kickoff(inputs=validation_inputs)
+
+    if not isinstance(validation_result, ValidationReport):
+        logger.error("Validation failed to return the expected report structure.")
+        logger.error(f"Received: {validation_result}")
+        return
+
+    logger.info(f"--- Validation Complete ---")
+    logger.info(f"  Market Demand: {validation_result.market_demand}")
+    logger.info(f"  Competitor Density: {validation_result.competitor_density}")
+    logger.info(f"  Monetization Potential: {validation_result.monetization_potential}")
+    logger.info(f"  RECOMMENDATION: {validation_result.recommendation}")
+    logger.info(f"  FINAL SCORE: {validation_result.viability_score} / 100")
+
+    if validation_result.viability_score < VALIDATION_THRESHOLD:
+        logger.warning(
+            f"Idea scored {validation_result.viability_score}, which is below the threshold of {VALIDATION_THRESHOLD}.")
+        logger.warning("Aborting content generation. The idea is not viable.")
+        return
+
+    logger.info(f"Validation passed! Proceeding to content generation.")
     
     bucket_name = settings.MINIO_BUCKET_NAME
     
     if not bucket_name:
         raise ValueError("MINIO_BUCKET_NAME environment variable not set or .env file not loaded.")
     
-    crew_inputs = {
-
+    content_crew_inputs = {
         **brief.dict(),
-
+        'validation_report': validation_result.dict(),
         'bucket_name': bucket_name,
+
         # Add the LLM configs for each agent
         'researcher_model_provider': settings.RESEARCHER_MODEL_PROVIDER,
         'researcher_model_name': settings.RESEARCHER_MODEL_ID,
@@ -50,8 +81,8 @@ def run():
     logger.info("------------------------")
     
     # Create an instance of the crew and kick it off
-    crew_instance = ContentCrew()
-    result = crew_instance.create_crew().kickoff(inputs=crew_inputs)
+    content_crew = ContentCrew().create_crew()
+    result = content_crew.kickoff(inputs=content_crew_inputs)
     
     logger.info("\n--- Content Crew Finished ---")
     logger.SHOW_FINAL_RESULT = True

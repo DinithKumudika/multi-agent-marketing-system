@@ -1,6 +1,28 @@
+validation_task:
+  description: >
+    Analyze the provided marketing brief for {product_name}.
+    Use your search tool to find data for the three pillars:
+    
+    1.  **Market Demand:** Check search volume and trends for the {category}, 
+        {problem_statement}, and related keywords.
+    2.  **Competitor Density:** Identify how many direct and indirect 
+        competitors exist for the {usp} and {problem_statement}.
+    3.  **Monetization Potential:** Research how similar apps or products 
+        in the {category} make money (e.g., ads, subscription, affiliate).
+        
+    Based on your findings, provide a final score and recommendation.
+    You MUST format your output as a JSON object that strictly adheres
+    to the 'ValidationReport' pydantic schema.
+  expected_output: >
+    A single, valid JSON object that matches the 'ValidationReport' 
+    pydantic schema. This is your *only* output.
+  agent: validator
+  output_pydantic: "src.models.validation_model.ValidationReport"
+
 research_task:
   description: >
-    Conduct supplemental research based on the marketing brief for {product_name}.
+    The idea for {product_name} has passed initial validation (Validation Report: {validation_report}).
+    Your job is to now conduct deep supplemental research based on the marketing brief and validation.
     
     1.  **Audience:** Search for {psychographics} and {demographics} of the {primary_audience}. If psychographics are not provided, find common ones for this audience.
     2.  **Pain Points:** If {target_pain_points} are missing, find 3-5 most common problems for the {problem_statement}.
@@ -15,6 +37,8 @@ research_task:
     Do not add any other text or pre-amble around the JSON object.
   agent: researcher # Assigns to the 'researcher' agent
   output_pydantic: "src.models.research_models.ResearchReport"
+  context:
+    - validation_task # depends on the output of 'validation_task'
 
 writing_task:
   description: >
