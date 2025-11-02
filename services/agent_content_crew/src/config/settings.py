@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     MINIO_SECRET_KEY: SecretStr
     MINIO_BUCKET_NAME: str
 
+    VALIDATION_THRESHOLD: int = 50  # Minimum viability score to pass validation
 try:
     settings = Settings()
 except Exception as e:

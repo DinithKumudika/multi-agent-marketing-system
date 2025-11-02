@@ -32,7 +32,7 @@ class CustomFormatter(Formatter):
 console_handler = StreamHandler(sys.stdout)
 console_handler.setFormatter(CustomFormatter())
 
-logger = getLogger("AGENT_CONTENT_CREW")
+logger = getLogger("agent.content_crew")
 logger.setLevel(logging.INFO)
 
 def custom_info(self, msg, *args, **kwargs):

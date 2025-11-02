@@ -1,5 +1,4 @@
 import questionary
-from questionary import Choice
 from ..config.logger import logger
 
 # --- Helper Functions for Different Question Types ---

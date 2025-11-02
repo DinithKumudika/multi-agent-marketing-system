@@ -3,6 +3,7 @@ validator:
   llm:
     provider: {validator_model_provider}
     model: {validator_model_name}
+    temperature: 0.2
   goal: >
     Critically assess the market viability of a new product idea based on
     a user-provided brief. Use real-time web data to analyze three core pillars:
@@ -26,6 +27,7 @@ researcher:
   llm: 
     provider: {researcher_model_provider}
     model: {researcher_model_name}
+    temperature: 0.2
   goal: >
     The idea for {product_name} has passed initial validation.
     Your primary goal is to build a *deep* and structured understanding of the market.
@@ -51,6 +53,7 @@ copywriter:
   llm:
     provider: {copywriter_model_provider}
     model: {copywriter_model_name}
+    temperature: 0.7
   goal: >
     Generate a compelling blog post and a separate, structured landing page
     for {product_name}, based on the provided brief and supplemental research.
